@@ -1,0 +1,4 @@
+github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=
+github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/monochromegane/go-avx v0.0.0-20180630020803-173aeef55d00 h1:eQ7KeK65SpL/7a3usdfPjv3KhbAzu3RIY+d0eLC1IeU=
+github.com/monochromegane/go-avx v0.0.0-20180630020803-173aeef55d00/go.mod h1:NnGlI97ixMU2EsjM/nG7MWv5+zHrVoSajC5tTVGGvO8=
