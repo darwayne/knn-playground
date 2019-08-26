@@ -40,7 +40,7 @@ func (s *Server) Serve() error {
 }
 
 func (s *Server) CreateSingleVector(ctx context.Context, req *knnpb.CreateSingleVectorRequest) (*knnpb.CreateSingleVectorResponse, error) {
-	log.Println("CreateSingleVector called")
+	log.Println("CreateSingleVector called", s.svc.Size())
 	vector := req.GetVector()
 	id := vector.GetId()
 	points := vector.GetPoints()
@@ -68,7 +68,7 @@ func (vs Vectors) ToSingleVectors() []SingleVector {
 }
 
 func (s *Server) CreateMultipleVector(ctx context.Context, req *knnpb.CreateMultipleVectorRequest) (*knnpb.CreateMultipleVectorResponse, error) {
-	log.Println("CreateMultipleVector called")
+	log.Println("CreateMultipleVector called", s.svc.Size())
 	vectors := Vectors(req.GetVectors()).ToSingleVectors()
 
 	return &knnpb.CreateMultipleVectorResponse{

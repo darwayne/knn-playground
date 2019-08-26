@@ -287,7 +287,7 @@ func (s *Aggregator) RandomClients() []*Client {
 	result := make([]*Client, 0, total)
 	indexes := rand.Perm(total)
 
-	for idx := range indexes {
+	for _, idx := range indexes {
 		result = append(result, clients[idx])
 	}
 

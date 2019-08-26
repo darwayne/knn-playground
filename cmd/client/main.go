@@ -15,7 +15,9 @@ import (
 )
 
 func main() {
-	url := flag.String("url", "localhost:50051", "url to connect to")
+	// localhost:50051
+	// localhost:23001
+	url := flag.String("url", ":50051", "url to connect to")
 	flag.Parse()
 	fmt.Println("Hello from client")
 
@@ -31,10 +33,16 @@ func main() {
 
 	ctx := context.Background()
 
-	//streamRequest(ctx, c)
+	//singleRequest(ctx, c)
+	streamRequest(ctx, c)
 
 	searchRequest(ctx, c)
 	//singleRequest(ctx, c)
+
+	//for i := 0; i < 5; i++ {
+	//	time.Sleep(5 * time.Second)
+	//	searchRequest(ctx, c)
+	//}
 
 	time.Sleep(time.Minute)
 }
@@ -67,8 +75,7 @@ func streamRequest(ctx context.Context, cli knnpb.KNNServiceClient) {
 
 	batchSize := 10
 	arr := make([]*knnpb.Vector, 0, batchSize)
-	for i := 0; i < 40000; i++ {
-
+	for i := 0; i < 4000000; i++ {
 		vec := &knnpb.Vector{
 			Id:     uuid.New().String(),
 			Points: knn.GenPoints(1, 128)[0],

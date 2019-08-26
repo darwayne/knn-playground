@@ -79,7 +79,10 @@ func (s *Service) CreateMultipleVectors(vectors ...SingleVector) int {
 
 func (s *Service) Size() int {
 	s.nodesMu.RLock()
-	length := len(s.nodes)
+	var length int
+	for _, n := range s.nodes {
+		length += len(n)
+	}
 	s.nodesMu.RUnlock()
 
 	return length
