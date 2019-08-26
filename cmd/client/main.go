@@ -31,9 +31,9 @@ func main() {
 
 	ctx := context.Background()
 
-	streamRequest(ctx, c)
+	//streamRequest(ctx, c)
 
-	//searchRequest(ctx, c)
+	searchRequest(ctx, c)
 	//singleRequest(ctx, c)
 
 	time.Sleep(time.Minute)
@@ -46,8 +46,10 @@ func searchRequest(ctx context.Context, cli knnpb.KNNServiceClient) {
 		},
 	}
 
+	ctx2, _ := context.WithTimeout(ctx, 2*time.Minute)
+
 	s := time.Now()
-	resp, err := cli.Search(ctx, req)
+	resp, err := cli.Search(ctx2, req)
 	e := time.Since(s)
 
 	if err != nil {
@@ -63,7 +65,7 @@ func streamRequest(ctx context.Context, cli knnpb.KNNServiceClient) {
 		log.Fatalf("Error receiving stream: %v", err)
 	}
 
-	batchSize := 200
+	batchSize := 10
 	arr := make([]*knnpb.Vector, 0, batchSize)
 	for i := 0; i < 40000; i++ {
 
@@ -101,7 +103,7 @@ func streamRequest(ctx context.Context, cli knnpb.KNNServiceClient) {
 }
 
 func singleRequest(ctx context.Context, cli knnpb.KNNServiceClient) {
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 100000; i++ {
 		req := &knnpb.CreateSingleVectorRequest{
 			Vector: &knnpb.Vector{
 				Id:     uuid.New().String(),

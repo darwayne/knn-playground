@@ -149,16 +149,19 @@ func (s *Aggregator) Search(ctx context.Context, req *knnpb.QueryRequest) (*knnp
 	clientCtx, cancel := context.WithCancel(ctx2)
 	defer cancel()
 
-	totalWorkers := len(s.clients) - 1
+	totalWorkers := s.TotalClients()
 
 	resultChan := make(chan []*knnpb.QueryResult, totalWorkers)
 	errChan := make(chan error, totalWorkers)
 	wg := &sync.WaitGroup{}
 
-	for _, c := range s.clients {
+	start := time.Now()
+	s.clientsMu.RLock()
+	for idx, c := range s.clients {
 		wg.Add(1)
-		go func(client *Client) {
+		go func(client *Client, id int) {
 			defer wg.Done()
+
 			resp, err := client.Search(clientCtx, req)
 			if err != nil {
 				select {
@@ -176,10 +179,12 @@ func (s *Aggregator) Search(ctx context.Context, req *knnpb.QueryRequest) (*knnp
 
 				}
 			}
-		}(c)
+		}(c, idx)
 	}
+	s.clientsMu.RUnlock()
 
 	wg.Wait()
+	fmt.Println("Search lookup completed in", time.Since(start))
 	close(errChan)
 	close(resultChan)
 
