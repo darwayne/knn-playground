@@ -1,8 +1,7 @@
-package knn_playground
+package knn
 
 import (
 	"fmt"
-	"github.com/monochromegane/go-avx"
 	"math"
 	"math/rand"
 	"runtime"
@@ -11,11 +10,11 @@ import (
 )
 
 func TestKNN(t *testing.T) {
-	as := NewEuclideanPoints([]float32{3,4,5,6})[0]
+	as := NewEuclideanPoints([]float32{3, 4, 5, 6})[0]
 	points := NewEuclideanPoints(
-		[]float32{1,2,3,4},
-		[]float32{19,15,16,17},
-		[]float32{29,25,26,27},
+		[]float32{1, 2, 3, 4},
+		[]float32{19, 15, 16, 17},
+		[]float32{29, 25, 26, 27},
 	)
 
 	ps := make([]Distancer, len(points))
@@ -23,18 +22,16 @@ func TestKNN(t *testing.T) {
 		ps[idx] = p
 	}
 
-
 	fmt.Println(KNN(as, ps...))
 }
 
 func TestParallelKNN(t *testing.T) {
-	as := NewEuclideanPoints([]float32{3,4,5,6})[0]
+	as := NewEuclideanPoints([]float32{3, 4, 5, 6})[0]
 	points := NewEuclideanPoints(
-		[]float32{1,2,3,4},
-		[]float32{19,15,16,17},
-		[]float32{29,25,26,27},
+		[]float32{1, 2, 3, 4},
+		[]float32{19, 15, 16, 17},
+		[]float32{29, 25, 26, 27},
 	)
-
 
 	fmt.Println(ParallelKNN(as, points.ToDistancers()...))
 }
@@ -89,9 +86,8 @@ func genPoints(total, dim int) [][]float32 {
 	return result
 }
 
-
 func TestKNN2(t *testing.T) {
-	fmt.Println(math.Ceil(float64(1)/float64(2)))
+	fmt.Println(math.Ceil(float64(1) / float64(2)))
 	points := NewEuclideanPoints(genPoints(5, 128)...)
 	fmt.Println(len(chunkDistancers(6, points.ToDistancers()...)))
 
@@ -102,22 +98,20 @@ func TestMemoryUsage(t *testing.T) {
 	s := time.Now()
 	points := NewEuclideanPoints(genPoints(8000000, 128)...).ToDistancers()
 	fmt.Println("it took", time.Since(s), "to generate 8m random points")
-	s  = time.Now()
+	s = time.Now()
 	ParallelKNN(points[0], points...)
 	fmt.Println("search completed in", time.Since(s))
 	time.Sleep(time.Minute)
 }
 
-func TestEuclidean(t *testing.T){
-	a := []float32{1,2,3,4,5,6,7}
-	b := []float32{8,9,10}
+func TestEuclidean(t *testing.T) {
+	a := []float32{1, 2, 3, 4, 5, 6, 7}
+	b := []float32{8, 9, 10}
 
-
-	full := []float32{1,2,3,4,5,6,7,8,9,10}
-	query := []float32{1,1,1,1,1,1,1,1,1,1}
-	aQuery := []float32{1,1,1,1,1,1,1}
-	bQuery := []float32{1,1,1,1}
-
+	full := []float32{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	query := []float32{1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+	aQuery := []float32{1, 1, 1, 1, 1, 1, 1}
+	bQuery := []float32{1, 1, 1, 1}
 
 	fmt.Println("full", avx.EuclideanDistance(10, query, full))
 	fmt.Println("a", avx.EuclideanDistance(7, a, aQuery))

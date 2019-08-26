@@ -1,0 +1,98 @@
+syntax = "proto3";
+
+package knn;
+option go_package="knnpb";
+
+message Vector {
+    string id = 1;
+    repeated float points = 2;
+    string namespace = 3;
+}
+
+message CreateSingleVectorRequest {
+    Vector vector = 1;
+}
+
+message CreateSingleVectorResponse {
+    uint32 result = 1;
+}
+
+
+message CreateMultipleVectorRequest {
+    repeated Vector vectors = 1;
+}
+
+message CreateMultipleVectorResponse {
+    uint32 result = 1;
+}
+
+
+message CreateStreamVectorRequest {
+    repeated Vector vectors = 1;
+}
+
+message CreateStreamVectorResponse {
+    uint32 result = 1;
+}
+
+
+message Query {
+    string namespace = 1;
+    repeated float points = 2;
+    uint32 neighbors = 3;
+}
+
+message QueryRequest {
+    Query query = 1;
+}
+
+message QueryResult {
+    string id = 1;
+    float distance = 2;
+}
+
+message QueryResponse {
+    repeated QueryResult results = 1;
+}
+
+message SizeRequest {
+
+}
+
+message SizeResponse {
+    uint32 size = 1;
+}
+
+service KNNService{
+    // Unary
+    rpc CreateSingleVector(CreateSingleVectorRequest) returns (CreateSingleVectorResponse) {};
+    rpc CreateMultipleVector(CreateMultipleVectorRequest) returns (CreateMultipleVectorResponse) {};
+    rpc Search(QueryRequest) returns (QueryResponse) {};
+    rpc GetSize(SizeRequest) returns (SizeResponse) {};
+
+
+
+    // Client Streaming
+    rpc CreateStreamVector(stream CreateStreamVectorRequest) returns (CreateStreamVectorResponse) {};
+}
+
+message AddEndpointRequest {
+    string endpoint = 1;
+}
+
+message AddEndpointResponse {
+
+}
+
+message RemoveEndpointRequest {
+    string endpoint = 1;
+}
+
+message RemoveEndpointResponse {
+
+}
+
+service AggregatorService{
+    rpc AddEndpoint(AddEndpointRequest) returns (AddEndpointResponse) {};
+    rpc RemoveEndpoint(RemoveEndpointRequest) returns (RemoveEndpointResponse) {};
+}

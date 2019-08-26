@@ -1,11 +1,13 @@
-package knn_playground
+package knn
 
 import (
-	"github.com/google/uuid"
-	"github.com/monochromegane/go-avx"
 	"math"
+	"math/rand"
 	"runtime"
 	"sync"
+
+	"github.com/google/uuid"
+	"github.com/monochromegane/go-avx"
 )
 
 type Distancer interface {
@@ -60,11 +62,10 @@ func ParallelKNN(query Distancer, points ...Distancer) Distancer {
 	return KNN(query, closestPoints...)
 }
 
-func chunkDistancers(size int, items ...Distancer)[][]Distancer {
+func chunkDistancers(size int, items ...Distancer) [][]Distancer {
 	itemSize := len(items)
-	eachArrSize := int(math.Ceil(float64(itemSize)/float64(size)))
+	eachArrSize := int(math.Ceil(float64(itemSize) / float64(size)))
 	results := make([][]Distancer, 0, size)
-
 
 	for i := 0; i < itemSize; i += eachArrSize {
 		end := i + eachArrSize
@@ -97,6 +98,7 @@ type EuclideanPoint struct {
 }
 
 type EuclideanPoints []*EuclideanPoint
+
 func (e EuclideanPoints) ToDistancers() []Distancer {
 	ps := make([]Distancer, len(e))
 	for idx, p := range e {
@@ -106,7 +108,6 @@ func (e EuclideanPoints) ToDistancers() []Distancer {
 	return ps
 }
 
-
 func (e *EuclideanPoint) Distance(d interface{}) float32 {
 	point, ok := d.(*EuclideanPoint)
 	if !ok {
@@ -114,4 +115,18 @@ func (e *EuclideanPoint) Distance(d interface{}) float32 {
 	}
 
 	return avx.EuclideanDistance(len(e.Vector), e.Vector, point.Vector)
+}
+
+func GenPoints(total, dim int) [][]float32 {
+	result := make([][]float32, total)
+	for idx := range result {
+		r := make([]float32, dim)
+		for i := 0; i < dim; i++ {
+			r[i] = rand.Float32()
+		}
+
+		result[idx] = r
+	}
+
+	return result
 }
